@@ -104,6 +104,17 @@
   .level strong { display: block; font: 800 30px/1 var(--display); letter-spacing: .01em; }
   .level strong .zh { font: 600 18px var(--zh); margin-left: 6px; color: #6F6450; }
   .level span.d { display: block; margin-top: 4px; font-size: 15px; line-height: 1.35; color: #5D5443; }
+  .stages { list-style: none; margin: 4px 0 24px; padding: 0; display: grid; gap: 14px; }
+  .stages li { display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: start; }
+  .stages .n { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font: 800 26px var(--display); color: var(--ivory); background: var(--red); }
+  .stages .n.rain { background: var(--blue); }
+  .stages strong { display: block; font: 800 26px/1.1 var(--display); color: var(--chalk); }
+  .stages strong .zh { font: 600 17px var(--zh); color: var(--chalk-2); margin-left: 6px; }
+  .stages .d { display: block; font-size: 15px; color: var(--chalk-2); }
+  .btn.start { width: 100%; font-size: 34px; padding: 18px 10px; }
+  .how { padding: 14px 18px; margin-bottom: 26px; }
+  .how ol { margin: 0; padding-left: 22px; font-size: 18px; line-height: 1.45; }
+  .how li + li { margin-top: 6px; }
   .footer-link { display: block; margin: 30px auto 0; background: none; border: 0; color: var(--chalk-2); text-decoration: underline; text-underline-offset: 3px; font-size: 15px; }
 
   /* ---------- game ---------- */
@@ -169,6 +180,7 @@
   .row.p2 .r { color: #8C98A6; }
   .row.p3 .r { color: #B06A33; }
   .row .t { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row .t small { display: block; font: 400 13px/1.3 var(--body); color: #8A7F68; margin-top: 2px; }
   .row .s { font: 800 28px/1 var(--display); font-variant-numeric: tabular-nums; text-align: right; }
   .row .s small { display: block; font: 700 12px/1.2 var(--body); color: #8A7F68; margin-top: 2px; }
   .row.me { background: #FFE9B8; margin: 0 -14px; padding-left: 14px; padding-right: 14px; }
@@ -193,20 +205,16 @@
   .live.on::before { background: var(--ok); box-shadow: 0 0 0 4px rgba(127, 211, 155, .25); }
   .live.off::before { background: #FF8A75; }
   .t-sub { color: var(--chalk-2); margin: 8px 0 22px; font-size: 18px; }
-  .t-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 2.4vw; }
-  .t-col h3 { font: 800 34px/1 var(--display); margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
-  .t-col h3 .n { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-size: 22px; background: var(--red); color: var(--ivory); }
-  .t-col.rain h3 .n { background: var(--blue); }
-  .t-col h3 .zh { font: 600 20px var(--zh); color: var(--chalk-2); }
   .t-count { color: var(--chalk-2); font-size: 16px; margin: 0 0 12px; }
-  .t-col .sheet { padding: 4px 18px; }
-  .t-col .row { padding: 12px 0; }
-  .t-col .row .r, .t-col .row .s { font-size: clamp(28px, 2.6vw, 42px); }
-  .t-col .row .t { font-size: clamp(18px, 1.6vw, 26px); }
+  .t-board { max-width: 900px; padding: 4px 22px; }
+  .t-board .row { padding: 12px 0; }
+  .t-board .row .r, .t-board .row .s { font-size: clamp(30px, 2.8vw, 46px); }
+  .t-board .row .t { font-size: clamp(19px, 1.7vw, 28px); }
+  .t-board .row .t small { font-size: clamp(13px, 1vw, 16px); }
+  .t-board .playing { font-size: clamp(14px, 1.1vw, 18px); }
   .footer-link.inline { display: inline; margin: 0; }
   @media (max-width: 900px) {
     #teacher { grid-template-columns: 1fr; padding: 20px; }
-    .t-cols { grid-template-columns: 1fr; }
     .qrbox svg { width: min(72vw, 360px); }
   }
 </style>
@@ -218,33 +226,28 @@
   <div class="demo" id="demo" aria-hidden="true"></div>
   <h1>Character<br>Puzzle</h1>
   <p class="zh-title">汉字拼拼看</p>
-  <p class="lead">Put two parts together to make a character. Make all 8 as fast as you can. A wrong match adds 5 seconds.</p>
-  <p class="room-note hidden" id="roomNote">You joined room <b id="roomCode"></b>. Your first try at each level goes on the class board.</p>
+  <p class="lead">Two levels, 8 characters each. Put two parts together to make a character. A wrong match adds 5 seconds. The fastest total time wins.</p>
+  <p class="room-note hidden" id="roomNote">You joined room <b id="roomCode"></b>. Your first full game goes on the class board.</p>
 
   <label class="field" for="team">Team name</label>
   <input id="team" type="text" maxlength="24" placeholder="Emma and Jack" autocomplete="off" enterkeyhint="done">
   <div class="err" id="err" role="alert"></div>
   <label class="switch"><input id="hints" type="checkbox" checked> Show color hints</label>
 
-  <div class="levels">
-    <button class="level" data-mode="scatter">
-      <span class="n">1</span>
-      <span><strong>Scatter<span class="zh">散落</span></strong>
-        <span class="d">Parts are all over the table. Drag one onto another, or tap two.</span></span>
-    </button>
-    <button class="level rain" data-mode="rain">
-      <span class="n">2</span>
-      <span><strong>Rain<span class="zh">下雨</span></strong>
-        <span class="d">Parts fall from the sky. Tap to catch two that go together.</span></span>
-    </button>
-  </div>
+  <ol class="stages">
+    <li><span class="n">1</span><span><strong>Scatter<span class="zh">散落</span></strong>
+      <span class="d">Parts are all over the table. Drag one onto another, or tap two.</span></span></li>
+    <li><span class="n rain">2</span><span><strong>Rain<span class="zh">下雨</span></strong>
+      <span class="d">Parts fall from the sky. Catch two that make a character.</span></span></li>
+  </ol>
+  <button class="btn start" id="startBtn">Start</button>
   <button class="footer-link" id="toTeacher">Teacher? Open the class board</button>
 </section>
 
 <!-- GAME -->
 <section id="game" class="hidden">
   <div class="topbar">
-    <div class="team" id="gTeam"></div>
+    <div class="team" id="gLevel"></div>
     <div class="timer" id="gTime" aria-live="off">0:00.0</div>
     <div class="pen" id="gPen"></div>
   </div>
@@ -258,6 +261,22 @@
     </div>
     <div class="tray-note">Tap a caught part to drop it</div>
   </div>
+</section>
+
+<!-- BETWEEN LEVELS -->
+<section id="between" class="page hidden">
+  <p class="done-head">Level 1 clear</p>
+  <div class="big-time" id="bTime"></div>
+  <div class="meta" id="bMeta"></div>
+  <h2>Next: Rain <span class="zh" style="font-size:22px;color:var(--chalk-2)">下雨</span></h2>
+  <div class="sheet how">
+    <ol>
+      <li>Parts fall from the sky.</li>
+      <li>Tap a part to catch it. Catch two that make a character.</li>
+      <li>Changed your mind? Tap a caught part to drop it.</li>
+    </ol>
+  </div>
+  <button class="btn start" id="nextBtn">Start level 2</button>
 </section>
 
 <!-- FINISH -->
@@ -277,10 +296,7 @@
   <p style="margin:-4px 0 16px;color:var(--chalk-2)">Take turns. Say each character and a word with it.</p>
   <div class="say-grid" id="fMade"></div>
 
-  <div class="btns">
-    <button class="btn" id="again">Play again</button>
-    <button class="btn ghost" id="other">Play Rain</button>
-  </div>
+  <div style="margin-top:30px"><button class="btn start" id="again">Play again</button></div>
 </section>
 
 <!-- TEACHER -->
@@ -298,19 +314,9 @@
   </div>
   <div class="t-right">
     <div class="t-head"><h1>Class board</h1><span class="live" id="tLive">Connecting</span></div>
-    <p class="t-sub">Lowest time wins. A wrong match adds 5 seconds. Only each team's first try counts.</p>
-    <div class="t-cols">
-      <div class="t-col">
-        <h3><span class="n">1</span>Scatter <span class="zh">散落</span></h3>
-        <p class="t-count" id="c1"></p>
-        <div class="sheet"><div class="rank" id="r1"></div></div>
-      </div>
-      <div class="t-col rain">
-        <h3><span class="n">2</span>Rain <span class="zh">下雨</span></h3>
-        <p class="t-count" id="c2"></p>
-        <div class="sheet"><div class="rank" id="r2"></div></div>
-      </div>
-    </div>
+    <p class="t-sub">Lowest total time for both levels wins. A wrong match adds 5 seconds. Only each team's first game counts.</p>
+    <p class="t-count" id="c1"></p>
+    <div class="sheet t-board"><div class="rank" id="r1"></div></div>
   </div>
 </section>
 
@@ -2632,7 +2638,6 @@ const PART_NAME = { 'hand': 'hand part' };
 const PENALTY = 5;
 // Class board relay (free public service, messages kept 12 hours).
 const RELAY = window.CP_RELAY || 'https://ntfy.sh/';
-const LEVEL_NAME = { scatter: 'Scatter', rain: 'Rain' };
 
 /* ===================== helpers ===================== */
 const $ = (id) => document.getElementById(id);
@@ -2691,41 +2696,50 @@ function listen(room, onObj, onStatus) {
 }
 function makeBoard() {
   const rows = new Map();
+  const ok = (x) => typeof x === 'number' && x > 0 && x < 3600;
   return {
     apply(o) {
-      if (!o || o.v !== 1 || typeof o.d !== 'string' || !(o.m in LEVEL_NAME)) return;
-      const key = o.d + '|' + o.m;
-      let r = rows.get(key);
-      if (!r) { r = { dev: o.d, mode: o.m, team: '', status: 'playing', time: 0, wrong: 0 }; rows.set(key, r); }
+      if (!o || o.v !== 2 || typeof o.d !== 'string') return;
+      let r = rows.get(o.d);
+      if (!r) { r = { dev: o.d, team: '', status: 'l1', time: 0, a: 0, b: 0, wrong: 0 }; rows.set(o.d, r); }
       if (r.status === 'done') return;
       r.team = String(o.n || 'Team').slice(0, 24);
-      if (o.t === 'f' && typeof o.s === 'number' && o.s > 0 && o.s < 3600) { r.status = 'done'; r.time = o.s; r.wrong = Math.max(0, o.w | 0); }
+      if (o.t === 's') r.status = 'l1';
+      else if (o.t === 'l' && ok(o.a)) { r.status = 'l2'; r.a = o.a; }
+      else if (o.t === 'f' && ok(o.s)) { r.status = 'done'; r.time = o.s; r.a = ok(o.a) ? o.a : 0; r.b = ok(o.b) ? o.b : 0; r.wrong = Math.max(0, o.w | 0); }
     },
-    list(mode) {
-      const all = [...rows.values()].filter(r => r.mode === mode);
-      return { done: all.filter(r => r.status === 'done').sort((a, b) => a.time - b.time), playing: all.filter(r => r.status === 'playing') };
+    list() {
+      const all = [...rows.values()];
+      return { done: all.filter(r => r.status === 'done').sort((x, y) => x.time - y.time),
+               l1: all.filter(r => r.status === 'l1'), l2: all.filter(r => r.status === 'l2') };
     },
   };
 }
 function renderRank(box, data, meDev, max = 99) {
   box.innerHTML = '';
-  if (!data.done.length) box.appendChild(el('div', 'empty', 'No finished teams yet.'));
+  if (!data.done.length) box.appendChild(el('div', 'empty', 'No team has finished yet.'));
   data.done.slice(0, max).forEach((r, i) => {
     const row = el('div', 'row' + (i < 3 ? ' p' + (i + 1) : '') + (r.dev === meDev ? ' me' : ''));
     row.appendChild(el('div', 'r', String(i + 1)));
-    row.appendChild(el('div', 't', r.team));
+    const name = el('div', 't', r.team);
+    if (r.a && r.b) name.appendChild(el('small', null, `Scatter ${fmt(r.a)}, Rain ${fmt(r.b)}`));
+    row.appendChild(name);
     const s = el('div', 's', fmt(r.time));
     if (r.wrong) s.appendChild(el('small', null, `${r.wrong} wrong, +${r.wrong * PENALTY}s`));
     row.appendChild(s);
     box.appendChild(row);
   });
-  if (data.playing.length) box.appendChild(el('div', 'playing', 'Still playing: ' + data.playing.map(r => r.team).join(', ')));
+  const names = (list) => list.map(r => r.team).join(', ');
+  if (data.l1.length) box.appendChild(el('div', 'playing', 'On level 1: ' + names(data.l1)));
+  if (data.l2.length) box.appendChild(el('div', 'playing', 'On level 2: ' + names(data.l2)));
 }
 
 /* ===================== state + screens ===================== */
-const S = { mode: 'scatter', team: '', hints: true, solved: [], penalty: 0, mistakes: 0, t0: 0, running: false, raf: 0 };
+const S = { mode: 'scatter', team: '', hints: true, solved: [], penalty: 0, levelPen: 0, mistakes: 0, acc: 0, splits: {}, t0: 0, running: false, raf: 0 };
+const LEVEL_LABEL = { scatter: 'Level 1 Scatter', rain: 'Level 2 Rain' };
+const r1 = (x) => Math.round(x * 10) / 10;
 function show(id) {
-  for (const s of ['start', 'game', 'finish', 'teacher']) $(s).classList.toggle('hidden', s !== id);
+  for (const s of ['start', 'game', 'between', 'finish', 'teacher']) $(s).classList.toggle('hidden', s !== id);
   window.scrollTo(0, 0);
 }
 
@@ -2740,14 +2754,14 @@ if (ROOM) { $('roomNote').classList.remove('hidden'); $('roomCode').textContent 
   box.innerHTML = `<div class="tile d1">${partSVG('宀')}</div><div class="tile d2">${partSVG('豕')}</div>` +
                   `<div class="tile d3">${charSVG('家')}</div><span class="chip">jiā</span>`;
 })();
-document.querySelectorAll('.level').forEach(b => b.addEventListener('click', () => {
+$('startBtn').addEventListener('click', () => {
   const team = $('team').value.trim();
   if (!team) { $('err').textContent = 'Type your team name first.'; $('team').focus(); return; }
   $('err').textContent = '';
   store('cp_team', team);
   S.team = team; S.hints = $('hints').checked;
-  startGame(b.dataset.mode);
-}));
+  startRun();
+});
 $('toTeacher').addEventListener('click', () => { location.hash = 'teacher'; });
 $('backStart').addEventListener('click', () => { location.hash = ''; });
 window.addEventListener('hashchange', route);
@@ -2758,22 +2772,26 @@ function route() {
 
 /* ===================== game shell ===================== */
 let tray = [null, null];
-function firstKey(mode) { return `cp_done_${ROOM}_${mode}`; }
-function startGame(mode) {
-  S.mode = mode; S.solved = []; S.penalty = 0; S.mistakes = 0; S.running = false;
-  S.counts = !!ROOM && !load(firstKey(mode));
+const firstKey = () => `cp_done2_${ROOM}`;
+function startRun() {
+  S.penalty = 0; S.mistakes = 0; S.acc = 0; S.splits = {};
+  S.counts = !!ROOM && !load(firstKey());
+  if (S.counts) send(ROOM, { v: 2, t: 's', d: DEV, n: S.team });
+  startLevel('scatter');
+}
+function startLevel(mode) {
+  S.mode = mode; S.solved = []; S.levelPen = 0; S.running = false;
   show('game');
   $('game').classList.toggle('nohint', !S.hints);
-  $('gTeam').textContent = S.team;
-  $('gTime').textContent = '0:00.0';
-  $('gPen').innerHTML = '';
+  $('gLevel').textContent = LEVEL_LABEL[mode];
+  $('gTime').textContent = fmt(S.acc);
+  $('gPen').innerHTML = S.penalty ? `<span>+${S.penalty}s</span>` : '';
   $('slots').innerHTML = CHARS.map(() => '<div class="slot"></div>').join('');
   const board = $('board');
   board.innerHTML = '';
   board.className = 'board' + (mode === 'rain' ? ' rain' : '');
   $('tray').classList.toggle('hidden', mode !== 'rain');
   tray = [null, null]; $('t0').innerHTML = ''; $('t1').innerHTML = '';
-  if (S.counts) send(ROOM, { v: 1, t: 's', d: DEV, n: S.team, m: mode });
   requestAnimationFrame(() => {
     if (mode === 'scatter') setupScatter(); else setupRain();
     countdown(() => {
@@ -2795,12 +2813,12 @@ function countdown(done) {
 function elapsed() { return (performance.now() - S.t0) / 1000; }
 function tick(now) {
   if (!S.running) return;
-  $('gTime').textContent = fmt(elapsed() + S.penalty);
+  $('gTime').textContent = fmt(S.acc + elapsed() + S.levelPen);
   if (S.mode === 'rain') rainStep(now);
   S.raf = requestAnimationFrame(tick);
 }
 function wrong(x, y, els) {
-  S.mistakes++; S.penalty += PENALTY;
+  S.mistakes++; S.penalty += PENALTY; S.levelPen += PENALTY;
   $('gPen').innerHTML = `<span>+${S.penalty}s</span>`;
   floatText(x, y, `+${PENALTY}s`); buzz();
   els.forEach(e => { e.classList.remove('shake'); void e.offsetWidth; e.classList.add('shake', 'bad'); });
@@ -2810,7 +2828,12 @@ function solved(c, x, y) {
   S.solved.push(c);
   const idx = S.solved.length - 1;
   const last = S.solved.length === CHARS.length;
-  if (last) { S.running = false; S.final = elapsed() + S.penalty; S.end = new Date(); }
+  if (last) {
+    S.running = false;
+    const lt = elapsed() + S.levelPen;
+    S.splits[S.mode] = lt; S.acc += lt; S.end = new Date();
+    $('gTime').textContent = fmt(S.acc);
+  }
   x = Math.max(64, Math.min(innerWidth - 64, x)); y = Math.max(150, Math.min(innerHeight - 130, y));
   const pop = el('div', 'pop in');
   pop.innerHTML = `<div class="flat">${charSVG(c.ch)}</div><span class="chip">${c.py}</span>`;
@@ -2827,9 +2850,18 @@ function solved(c, x, y) {
   setTimeout(() => {
     pop.remove();
     slot.classList.add('done'); slot.innerHTML = `<div class="flat">${charSVG(c.ch)}</div>`;
-    if (last) finish();
+    if (last) { if (S.mode === 'scatter') setTimeout(levelClear, 350); else finish(); }
   }, 1170);
 }
+function levelClear() {
+  cancelAnimationFrame(S.raf);
+  $('bTime').textContent = fmt(S.acc);
+  $('bMeta').textContent = 'The clock is paused. ' + (S.mistakes
+    ? `${S.mistakes} wrong ${S.mistakes === 1 ? 'match' : 'matches'} so far (+${S.penalty}s).` : 'No wrong matches so far.');
+  if (S.counts) send(ROOM, { v: 2, t: 'l', d: DEV, n: S.team, a: r1(S.splits.scatter) });
+  show('between');
+}
+$('nextBtn').addEventListener('click', () => startLevel('rain'));
 
 /* ===================== level 1: scatter ===================== */
 let tiles = [], drag = null, selected = null, zTop = 10, tileSize = 72;
@@ -3003,36 +3035,35 @@ function check() {
 }
 
 /* ===================== finish ===================== */
-let stopStudent = null, studentBoard = null;
+let studentBoard = null;
 function finish() {
   cancelAnimationFrame(S.raf);
   falling.forEach(f => f.el.remove()); falling = [];
+  S.final = S.acc;
   $('fTeam').textContent = S.team;
   $('fTime').textContent = fmt(S.final);
   const clock = S.end.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
-  const wrongText = S.mistakes ? `${S.mistakes} wrong ${S.mistakes === 1 ? 'match' : 'matches'}, +${S.penalty}s` : 'No wrong matches';
-  $('fMeta').textContent = `${LEVEL_NAME[S.mode]} level. ${wrongText}. Finished at ${clock}.`;
+  const wrongText = S.mistakes ? `${S.mistakes} wrong ${S.mistakes === 1 ? 'match' : 'matches'} (+${S.penalty}s)` : 'No wrong matches';
+  $('fMeta').textContent = `Scatter ${fmt(S.splits.scatter)}, Rain ${fmt(S.splits.rain)}. ${wrongText}. Finished at ${clock}.`;
   $('fMade').innerHTML = CHARS.map(c => `<div class="say"><div class="flat">${charSVG(c.ch)}</div>
      <div><div class="py">${c.py}</div><div class="w">${c.w}</div><div class="wp">${c.wp}</div></div></div>`).join('');
-  $('other').textContent = S.mode === 'rain' ? 'Play Scatter' : 'Play Rain';
   const sendBox = $('fSend');
   sendBox.className = 'send'; sendBox.textContent = '';
   if (ROOM) {
     $('fRankWrap').classList.remove('hidden');
-    $('fRankTitle').textContent = `Class board: ${LEVEL_NAME[S.mode]}`;
     if (S.counts) {
-      store(firstKey(S.mode), '1');
+      store(firstKey(), '1');
       sendBox.textContent = 'Sending your time to the class board…';
-      send(ROOM, { v: 1, t: 'f', d: DEV, n: S.team, m: S.mode, s: Math.round(S.final * 10) / 10, w: S.mistakes }).then(ok => {
+      send(ROOM, { v: 2, t: 'f', d: DEV, n: S.team, s: r1(S.final), a: r1(S.splits.scatter), b: r1(S.splits.rain), w: S.mistakes }).then(ok => {
         sendBox.className = 'send ' + (ok ? 'ok' : 'bad');
         sendBox.textContent = ok ? 'Your time is on the class board.' : 'The class board can’t be reached. Show this screen to your teacher.';
       });
     } else {
-      sendBox.textContent = 'Practice round. The class board keeps your first try.';
+      sendBox.textContent = 'Practice game. The class board keeps your first game.';
     }
     if (!studentBoard) {
       studentBoard = makeBoard();
-      stopStudent = listen(ROOM, (o) => { studentBoard.apply(o); drawStudent(); });
+      listen(ROOM, (o) => { studentBoard.apply(o); drawStudent(); });
     }
     drawStudent();
   } else {
@@ -3040,9 +3071,8 @@ function finish() {
   }
   show('finish');
 }
-function drawStudent() { if (studentBoard) renderRank($('fRank'), studentBoard.list(S.mode), DEV, 10); }
-$('again').addEventListener('click', () => startGame(S.mode));
-$('other').addEventListener('click', () => startGame(S.mode === 'rain' ? 'scatter' : 'rain'));
+function drawStudent() { if (studentBoard) renderRank($('fRank'), studentBoard.list(), DEV, 10); }
+$('again').addEventListener('click', () => startRun());
 
 /* ===================== teacher ===================== */
 let tRoom = null, tStop = null, tBoard = null, armed = 0;
@@ -3072,11 +3102,9 @@ function openTeacher(fresh) {
   });
 }
 function drawTeacher() {
-  for (const [mode, box, cnt] of [['scatter', 'r1', 'c1'], ['rain', 'r2', 'c2']]) {
-    const d = tBoard.list(mode);
-    renderRank($(box), d, null);
-    $(cnt).textContent = `${d.done.length} finished, ${d.playing.length} playing`;
-  }
+  const d = tBoard.list();
+  renderRank($('r1'), d, null);
+  $('c1').textContent = `${d.done.length} finished, ${d.l1.length + d.l2.length} playing`;
 }
 $('countBtn').addEventListener('click', () => countdown(() => {}));
 $('newRound').addEventListener('click', () => {
