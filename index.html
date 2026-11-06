@@ -243,6 +243,14 @@
   .chips span { width: 34px; height: 36px; border-radius: 7px; display: grid; place-items: center; font: 500 20px var(--zh); color: var(--ink);
                 background: var(--ivory); box-shadow: 0 2px 0 var(--amber), 0 3px 0 var(--amber-deep); }
   .t-err { color: #FFB4A6; font-size: 15px; margin-top: 6px; }
+  .joined-count { font: 800 clamp(44px, 4.6vw, 76px)/1 var(--display); margin: 4px 0 20px; color: var(--chalk); }
+  .joined-count b { color: var(--amber); font-weight: 800; }
+  .team-chips { display: flex; flex-wrap: wrap; gap: 14px; max-width: 900px; }
+  .team-chips span { font: 700 clamp(18px, 1.6vw, 26px)/1.2 var(--body); color: var(--ink); background: var(--ivory); padding: 12px 18px;
+                     border-radius: 12px; box-shadow: 0 4px 0 var(--amber), 0 6px 0 var(--amber-deep); }
+  .team-chips span.new { animation: popin .4s cubic-bezier(.2,1.7,.4,1); }
+  .joined-hint { color: var(--chalk-2); font-size: 19px; margin-top: 26px; max-width: 60ch; }
+  @media (prefers-reduced-motion: reduce) { .team-chips span.new { animation: none; } }
   .t-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
   .t-actions .btn { padding: 15px 22px; }
   .t-head { display: flex; align-items: baseline; gap: 18px; flex-wrap: wrap; }
@@ -421,8 +429,13 @@
       <div class="t-err" id="tSetErr"></div>
     </div>
     <div class="all-done hidden" id="allDone"><span>Everyone has finished. Read the characters together.</span><button class="btn" id="readBtn2">Read together</button></div>
+    <div id="joined">
+      <p class="joined-count"><b id="jCount">0</b> <span id="jLabel">teams joined</span></p>
+      <div class="team-chips" id="jTeams"></div>
+      <p class="joined-hint" id="jHint">Teams show up here as they scan and join. When everyone is in, press Start the game.</p>
+    </div>
     <p class="t-count" id="c1"></p>
-    <div class="sheet t-board"><div class="rank" id="r1"></div></div>
+    <div class="sheet t-board" id="tBoardSheet"><div class="rank" id="r1"></div></div>
   </div>
 </section>
 
@@ -3405,9 +3418,20 @@ function openTeacher(fresh) {
 function drawTeacher() {
   const d = tBoard.list();
   renderRank($('r1'), d, null);
-  const playing = d.l1.length + d.l2.length;
-  $('c1').textContent = tBoard.started ? `${d.done.length} finished, ${playing} playing` + (d.ready.length ? `, ${d.ready.length} ready` : '')
-                                       : `${d.ready.length} ${d.ready.length === 1 ? 'team' : 'teams'} ready`;
+  const playing = d.l1.length + d.l2.length, pre = !tBoard.started;
+  $('joined').classList.toggle('hidden', !pre);
+  $('tBoardSheet').classList.toggle('hidden', pre);
+  if (pre) {
+    const teams = [...d.ready, ...d.l1, ...d.l2, ...d.done];
+    $('jCount').textContent = teams.length;
+    $('jLabel').textContent = teams.length === 1 ? 'team joined' : 'teams joined';
+    const box = $('jTeams'), have = new Set([...box.children].map(c => c.dataset.dev));
+    if (box.children.length !== teams.length || teams.some(r => !have.has(r.dev))) {
+      box.innerHTML = '';
+      for (const r of teams) { const c = el('span', have.has(r.dev) ? '' : 'new', r.team); c.dataset.dev = r.dev; box.appendChild(c); }
+    }
+  }
+  $('c1').textContent = pre ? '' : `${d.done.length} finished, ${playing} playing` + (d.ready.length ? `, ${d.ready.length} just joined` : '');
   $('allDone').classList.toggle('hidden', !(d.done.length && !playing && !d.ready.length));
   const go = $('goBtn');
   if (tBoard.started) { go.disabled = true; go.textContent = 'Game started'; }
