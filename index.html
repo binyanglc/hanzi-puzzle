@@ -108,6 +108,8 @@
   .stages li { display: grid; grid-template-columns: 44px 1fr; gap: 12px; align-items: start; }
   .stages .n { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font: 800 26px var(--display); color: var(--ivory); background: var(--red); }
   .stages .n.rain { background: var(--blue); }
+  .stages .n.mole { background: var(--amber); color: var(--ink); }
+  .stages .n.snake { background: #3E8E5E; }
   .stages strong { display: block; font: 800 26px/1.1 var(--display); color: var(--chalk); }
   .stages strong .zh { font: 600 17px var(--zh); color: var(--chalk-2); margin-left: 6px; }
   .stages .d { display: block; font-size: 15px; color: var(--chalk-2); }
@@ -172,6 +174,50 @@
   .slot .flat svg { padding: 8%; }
   .board { position: relative; flex: 1; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; max-width: 600px; width: 100%; margin: 0 auto; }
   .board.rain { background: linear-gradient(rgba(5, 25, 18, .55), rgba(5, 25, 18, 0) 55%); }
+  /* listen prompt (levels 3 and 4) */
+  .prompt { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 10px 16px; background: rgba(0,0,0,.18); position: relative; z-index: 2; }
+  .listen { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 999px; padding: 9px 18px; font: 800 22px/1 var(--display);
+            color: var(--ink); background: var(--amber); box-shadow: 0 3px 0 var(--amber-deep); }
+  .listen svg { width: 22px; height: 22px; }
+  .listen.ping { animation: ping .5s ease-out; }
+  @keyframes ping { 40% { transform: scale(1.08); } }
+  .prompt-py { font: 800 28px/1 var(--display); color: var(--chalk); letter-spacing: .02em; }
+  .hint { border: 0; background: none; color: var(--chalk-2); text-decoration: underline; text-underline-offset: 3px; font-size: 15px; padding: 6px; }
+  .prompt-note { font-size: 13px; color: var(--chalk-2); }
+  /* level 3: whack-a-mole */
+  .board.mole { background: radial-gradient(120% 80% at 50% 40%, rgba(255,255,255,.05), rgba(0,0,0,.18)); }
+  .hole { position: absolute; }
+  .hole .mouth { position: absolute; left: 0; right: 0; bottom: 0; height: 30%; border-radius: 50%;
+                 background: radial-gradient(ellipse at 50% 35%, #06150F 45%, #0E3226 100%); box-shadow: 0 2px 0 rgba(255,255,255,.08); }
+  .hole .pit { position: absolute; left: 0; right: 0; top: 0; bottom: 15%; overflow: hidden; display: flex; justify-content: center; align-items: flex-end; }
+  .tile.mole { position: relative; left: auto; top: auto; transform: translateY(115%); transition: transform .15s ease-out; }
+  .tile.mole.up { transform: translateY(4%); }
+  .tile.mole.hit { background: #D6F0DC; }
+  .tile.ink svg .c1, .tile.ink svg .c2 { fill: var(--ink); }
+  @media (prefers-reduced-motion: reduce) { .tile.mole { transition: none; } }
+  /* level 4: snake */
+  .board.snake { background-color: rgba(0,0,0,.12); }
+  .snake-grid { position: absolute; border-radius: 10px; background-color: rgba(255,255,255,.03);
+                background-image: linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px); }
+  .seg { position: absolute; left: 0; top: 0; border-radius: 30%; background: var(--amber); box-shadow: inset 0 -3px 0 var(--amber-deep); }
+  .seg.head { background: var(--red); box-shadow: inset 0 -3px 0 #8E2318; z-index: 3; }
+  .seg.head::before, .seg.head::after { content: ""; position: absolute; width: 22%; height: 22%; border-radius: 50%; background: #fff; top: 26%; }
+  .seg.head::before { left: 20%; } .seg.head::after { right: 20%; }
+  .food { position: absolute; left: 0; top: 0; display: grid; place-items: center; border-radius: 22%; font: 600 26px/1 var(--zh); color: var(--ink);
+          background: linear-gradient(165deg, #FFFDF7, var(--ivory) 50%, var(--ivory-2)); box-shadow: 0 3px 0 var(--amber), 0 4px 0 var(--amber-deep); z-index: 2; }
+  .food.bad { background: #FFD9D0; }
+  .pad { display: grid; grid-template-columns: repeat(3, 64px); grid-template-rows: repeat(2, 52px); gap: 6px; justify-content: center;
+         padding: 10px 16px; padding-bottom: max(12px, env(safe-area-inset-bottom)); background: var(--rail); position: relative; z-index: 2; }
+  .pad button { border: 0; border-radius: 12px; background: rgba(244,238,221,.12); color: var(--chalk); display: grid; place-items: center; }
+  .pad button:active { background: rgba(244,238,221,.28); }
+  .pad svg { width: 26px; height: 26px; }
+  .pad .up { grid-column: 2; grid-row: 1; } .pad .left { grid-column: 1; grid-row: 2; } .pad .down { grid-column: 2; grid-row: 2; } .pad .right { grid-column: 3; grid-row: 2; }
+  .word-tag { text-align: center; font: 700 15px var(--body); color: var(--chalk-2); margin-bottom: 6px; }
+  .word-tag b { color: var(--amber); }
+  .word-tag .bonus { color: var(--ok); }
+  .slot .flat.txt { display: grid; place-items: center; font: 600 clamp(20px, 6vw, 30px)/1 var(--zh); color: var(--red); }
+  .pop .word { font: 600 40px/1.1 var(--zh); color: var(--ink); background: var(--ivory); padding: 10px 18px; border-radius: 12px;
+               box-shadow: 0 5px 0 var(--amber), 0 7px 0 var(--amber-deep), 0 18px 26px rgba(0,0,0,.4); white-space: nowrap; }
   .tray { flex: 0 0 auto; padding: 12px 16px; padding-bottom: max(14px, env(safe-area-inset-bottom)); background: linear-gradient(#C98E35, #A8701F); box-shadow: 0 -6px 14px rgba(0,0,0,.3); position: relative; z-index: 2; }
   .tray-row { display: flex; align-items: center; justify-content: center; gap: 16px; }
   .tray-slot { width: 80px; height: 80px; border-radius: 13%; background: rgba(60, 35, 5, .38); box-shadow: inset 0 3px 6px rgba(0,0,0,.35); position: relative; }
@@ -314,7 +360,7 @@
   <h1>Character<br>Puzzle</h1>
   <p class="zh-title">汉字拼拼看</p>
   <p class="set-name hidden" id="setName"></p>
-  <p class="lead" id="lead">Two levels, 8 characters each. Put two parts together to make a character. A wrong match adds 5 seconds. The fastest total time wins.</p>
+  <p class="lead" id="lead">Build characters from their parts, then listen and find them. Turn your sound on! A wrong move adds 5 seconds. The fastest total time wins.</p>
   <p class="room-note hidden" id="roomNote">You joined room <b id="roomCode"></b>. Your first full game goes on the class board.</p>
 
   <label class="field" for="team">Team name</label>
@@ -322,12 +368,7 @@
   <div class="err" id="err" role="alert"></div>
   <label class="switch"><input id="hints" type="checkbox" checked> Show color hints</label>
 
-  <ol class="stages">
-    <li><span class="n">1</span><span><strong>Scatter<span class="zh">散落</span></strong>
-      <span class="d">Parts are all over the table. Drag one onto another, or tap two.</span></span></li>
-    <li><span class="n rain">2</span><span><strong>Rain<span class="zh">下雨</span></strong>
-      <span class="d">Parts fall from the sky. Catch two that make a character.</span></span></li>
-  </ol>
+  <ol class="stages" id="stages"></ol>
   <button class="btn start" id="startBtn">Start</button>
   <button class="footer-link" id="toTeacher">Teacher? Open the class board</button>
 </section>
@@ -339,8 +380,19 @@
     <div class="timer" id="gTime" aria-live="off">0:00.0</div>
     <div class="pen" id="gPen"></div>
   </div>
-  <div class="rack"><div class="slots" id="slots"></div></div>
+  <div class="rack"><div class="word-tag hidden" id="wordTag"></div><div class="slots" id="slots"></div></div>
+  <div class="prompt hidden" id="prompt">
+    <button class="listen" id="listenBtn" aria-label="Listen again"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>Listen</button>
+    <span class="prompt-py hidden" id="promptPy"></span>
+    <button class="hint" id="hintBtn">Show pinyin (+3s)</button>
+  </div>
   <div class="board" id="board"></div>
+  <div class="pad hidden" id="pad" aria-label="Arrows">
+    <button class="up" data-d="0,-1" aria-label="Up"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
+    <button class="left" data-d="-1,0" aria-label="Left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <button class="down" data-d="0,1" aria-label="Down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></button>
+    <button class="right" data-d="1,0" aria-label="Right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+  </div>
   <div class="tray hidden" id="tray">
     <div class="tray-row">
       <div class="tray-slot" id="t0"></div>
@@ -358,11 +410,7 @@
   <p class="wait-big">Wait for your teacher to start</p>
   <p class="wait-status" id="wStatus">Connecting to the class board</p>
   <div class="sheet how">
-    <ol>
-      <li>Level 1, Scatter: drag one part onto another.</li>
-      <li>Level 2, Rain: catch two parts that make a character.</li>
-      <li>A wrong match adds 5 seconds.</li>
-    </ol>
+    <ol id="waitHow"></ol>
   </div>
   <div class="solo hidden" id="wSolo">
     <p>The class board can’t be reached, so the start signal may not arrive.</p>
@@ -373,17 +421,11 @@
 
 <!-- BETWEEN LEVELS -->
 <section id="between" class="page hidden">
-  <p class="done-head">Level 1 clear</p>
+  <p class="done-head" id="bHead">Level 1 clear</p>
   <div class="big-time" id="bTime"></div>
   <div class="meta" id="bMeta"></div>
-  <h2>Next: Rain <span class="zh" style="font-size:22px;color:var(--chalk-2)">下雨</span></h2>
-  <div class="sheet how">
-    <ol>
-      <li>Parts fall from the sky.</li>
-      <li>Tap a part to catch it. Catch two that make a character.</li>
-      <li>Changed your mind? Tap a caught part to drop it.</li>
-    </ol>
-  </div>
+  <h2 id="bNext">Next</h2>
+  <div class="sheet how"><ol id="bHow"></ol></div>
   <button class="btn start" id="nextBtn">Start level 2</button>
 </section>
 
@@ -423,7 +465,7 @@
   </div>
   <div class="t-right">
     <div class="t-head"><h1>Class board</h1><span class="live" id="tLive">Connecting</span></div>
-    <p class="t-sub">Lowest total time for both levels wins. A wrong match adds 5 seconds. Only each team's first game counts.</p>
+    <p class="t-sub">Lowest total time for all levels wins. A wrong move adds 5 seconds. Only each team's first game counts.</p>
     <div class="t-set">
       <div class="t-set-head"><span id="tSetName">Lesson 3 characters</span><button class="footer-link inline" id="changeSet">Change characters</button></div>
       <div class="t-err" id="tSetErr"></div>
@@ -442,7 +484,7 @@
 <!-- SETUP (teacher) -->
 <section id="setup" class="page hidden">
   <h1>Choose characters</h1>
-  <p class="setup-help">Type 4 to 12 characters. Each one is split into two parts automatically. Check the pinyin, and add a word if you like. It shows on the read-together screen.</p>
+  <p class="setup-help">Type 4 to 12 characters. Each one is split into two parts automatically. Check the pinyin, and add a word for each character: level 4 (Snake) is played with these words, and they show on the read-together screen.</p>
   <div class="set-fields">
     <div><label class="field" for="setChars">Characters</label>
       <input id="setChars" type="text" maxlength="60" placeholder="你好妈吗们他说话" autocomplete="off" lang="zh"></div>
@@ -2801,7 +2843,7 @@ let FIRST = new Set(CHARS.map(c => c.a));
 function partSVG(p) { return `<svg viewBox="0 0 1024 1024" aria-hidden="true"><g class="${FIRST.has(p) ? 'c1' : 'c2'}">${PARTS[p]}</g></svg>`; }
 function charSVG(ch) { return `<svg viewBox="0 0 1024 1024" aria-hidden="true">${CHAR_SVG[ch]}</svg>`; }
 function findChar(p, q, pool) { return pool.find(c => (c.a === p && c.b === q) || (c.a === q && c.b === p)); }
-function fmt(sec) { const m = Math.floor(sec / 60), s = sec - m * 60; return `${m}:${s < 10 ? '0' : ''}${s.toFixed(1)}`; }
+function fmt(sec) { if (sec < 0) return '−' + fmt(-sec); const m = Math.floor(sec / 60), s = sec - m * 60; return `${m}:${s < 10 ? '0' : ''}${s.toFixed(1)}`; }
 function rand(a, b) { return a + Math.random() * (b - a); }
 function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -2942,18 +2984,22 @@ function makeBoard() {
       if (o.t === 'go') { this.started = true; return; }
       if (typeof o.d !== 'string') return;
       let r = rows.get(o.d);
-      if (!r) { r = { dev: o.d, team: '', status: 'ready', time: 0, a: 0, b: 0, wrong: 0 }; rows.set(o.d, r); }
+      if (!r) { r = { dev: o.d, team: '', status: 'ready', time: 0, sp: [], wrong: 0 }; rows.set(o.d, r); }
       if (r.status === 'done') return;
       r.team = String(o.n || 'Team').slice(0, 24);
-      if (o.t === 's') r.status = 'l1';
-      else if (o.t === 'l' && ok(o.a)) { r.status = 'l2'; r.a = o.a; }
-      else if (o.t === 'f' && ok(o.s)) { r.status = 'done'; r.time = o.s; r.a = ok(o.a) ? o.a : 0; r.b = ok(o.b) ? o.b : 0; r.wrong = Math.max(0, o.w | 0); }
+      const lvNow = typeof r.status === 'number' ? r.status : 0;
+      if (o.t === 's') r.status = Math.max(lvNow, 1);
+      else if (o.t === 'l' && ok(o.a)) { const lv = Math.min(9, Math.max(1, o.lv | 0 || 1)); r.sp[lv - 1] = o.a; r.status = Math.max(lvNow, lv + 1); }
+      else if (o.t === 'f' && ok(o.s)) {
+        r.status = 'done'; r.time = o.s; r.wrong = Math.max(0, o.w | 0); r.wd = Math.max(0, Math.min(99, o.wd | 0));
+        if (Array.isArray(o.sp)) r.sp = o.sp.filter(x => typeof x === 'number' && x > -600 && x < 3600).slice(0, 9);
+      }
     },
     list() {
       const all = [...rows.values()];
       return { done: all.filter(r => r.status === 'done').sort((x, y) => x.time - y.time),
                ready: all.filter(r => r.status === 'ready'),
-               l1: all.filter(r => r.status === 'l1'), l2: all.filter(r => r.status === 'l2') };
+               playing: all.filter(r => typeof r.status === 'number').sort((x, y) => x.status - y.status) };
     },
   };
 }
@@ -2964,22 +3010,101 @@ function renderRank(box, data, meDev, max = 99) {
     const row = el('div', 'row' + (i < 3 ? ' p' + (i + 1) : '') + (r.dev === meDev ? ' me' : ''));
     row.appendChild(el('div', 'r', String(i + 1)));
     const name = el('div', 't', r.team);
-    if (r.a && r.b) name.appendChild(el('small', null, `Scatter ${fmt(r.a)}, Rain ${fmt(r.b)}`));
+    if (r.sp.length) name.appendChild(el('small', null, r.sp.map((x, k) => `L${k + 1} ${fmt(x)}`).join(' · ')));
     row.appendChild(name);
     const s = el('div', 's', fmt(r.time));
-    if (r.wrong) s.appendChild(el('small', null, `${r.wrong} wrong, +${r.wrong * PENALTY}s`));
+    const sm = [r.wd ? `${r.wd} ${r.wd === 1 ? 'word' : 'words'}` : '', r.wrong ? `${r.wrong} wrong` : ''].filter(Boolean).join(' · ');
+    if (sm) s.appendChild(el('small', null, sm));
     row.appendChild(s);
     box.appendChild(row);
   });
   const names = (list) => list.map(r => r.team).join(', ');
   if (data.ready.length) box.appendChild(el('div', 'playing', 'Ready: ' + names(data.ready)));
-  if (data.l1.length) box.appendChild(el('div', 'playing', 'On level 1: ' + names(data.l1)));
-  if (data.l2.length) box.appendChild(el('div', 'playing', 'On level 2: ' + names(data.l2)));
+  const lvls = [...new Set(data.playing.map(r => r.status))];
+  for (const lv of lvls) box.appendChild(el('div', 'playing', `On level ${lv}: ` + names(data.playing.filter(r => r.status === lv))));
 }
 
 /* ===================== state + screens ===================== */
 const S = { mode: 'scatter', team: '', hints: true, solved: [], penalty: 0, levelPen: 0, mistakes: 0, acc: 0, splits: {}, t0: 0, running: false, raf: 0 };
-const LEVEL_LABEL = { scatter: 'Level 1 Scatter', rain: 'Level 2 Rain' };
+const LEVELS = {
+  scatter: { name: 'Scatter', zh: '散落', desc: 'Parts are all over the table. Drag one onto another, or tap two.',
+             short: 'drag one part onto another.',
+             how: ['Parts are all over the table.', 'Drag one part onto another, or tap two parts.', 'A wrong match adds 5 seconds.'] },
+  rain: { name: 'Rain', zh: '下雨', desc: 'Parts fall from the sky. Catch two that make a character.',
+          short: 'catch two parts that make a character.',
+          how: ['Parts fall from the sky.', 'Tap a part to catch it. Catch two that make a character.', 'Changed your mind? Tap a caught part to drop it.'] },
+  mole: { name: 'Whack-a-mole', zh: '打地鼠', desc: 'Listen to a character. Tap it when it pops out of a hole.',
+          short: 'tap the character you hear.',
+          how: ['Turn your sound on and listen to the character.', 'Characters pop out of the holes. Tap the one you heard.', 'Tap Listen to hear it again. A wrong tap adds 5 seconds.'] },
+  snake: { name: 'Snake', zh: '贪吃蛇', desc: 'Characters keep appearing. Eat them in order to make words from this lesson. Each word takes 5 seconds off your time.',
+           short: 'eat characters in order to make words. 60 seconds, each word takes 5 seconds off.',
+           get how() {
+             const w = (snakeWords()[0] || { w: '明天' }).w, a = Array.from(w);
+             return ['You have 60 seconds. Make as many words from this lesson as you can.',
+                     'Steer the snake: swipe on the board, or use the arrows.',
+                     `Eat the characters in order, like ${a.slice(0, -1).join(', ')} then ${a[a.length - 1]} for ${w}. Each word takes 5 seconds off your time.`,
+                     'A character that doesn’t fit any word adds 3 seconds.'];
+           } },
+};
+function snakeWords() {
+  const out = [];
+  for (const c of CHARS) {
+    const w = Array.from(c.w || '').filter(isHan).join('');
+    if (w.length >= 2 && w.length <= 6 && !out.some(x => x.w === w)) out.push({ w, py: c.wp || wordPinyin(w) });
+  }
+  return out;
+}
+function wordPinyin(w) {
+  return Array.from(w).map(ch => { const c = CHARS.find(x => x.ch === ch); return c ? c.py : (splitInfo(ch).py || ''); }).join(' ');
+}
+function levelList() { const l = ['scatter', 'rain', 'mole']; if (snakeWords().length >= 3) l.push('snake'); return l; }
+function renderLevelLists() {
+  const lv = levelList();
+  $('stages').innerHTML = lv.map((m, i) => `<li><span class="n ${m}">${i + 1}</span><span><strong>${LEVELS[m].name}<span class="zh">${LEVELS[m].zh}</span></strong>` +
+    `<span class="d">${LEVELS[m].desc}</span></span></li>`).join('');
+  $('waitHow').innerHTML = lv.map((m, i) => `<li>Level ${i + 1}, ${LEVELS[m].name}: ${LEVELS[m].short}</li>`).join('') +
+    '<li>Turn your sound on. A wrong move adds 5 seconds.</li>';
+}
+// ---- speech (levels 3 and 4) ----
+let zhVoice = null, voicesKnown = false;
+function pickVoice() {
+  try {
+    const vs = speechSynthesis.getVoices();
+    if (vs.length) voicesKnown = true;
+    zhVoice = vs.find(v => /^zh[-_]CN/i.test(v.lang)) || vs.find(v => /^cmn/i.test(v.lang)) ||
+              vs.find(v => /^zh/i.test(v.lang) && !/HK|yue/i.test(v.lang)) || null;
+  } catch (e) {}
+}
+if ('speechSynthesis' in window) { pickVoice(); try { speechSynthesis.addEventListener('voiceschanged', pickVoice); } catch (e) {} }
+const noVoice = () => !('speechSynthesis' in window) || (voicesKnown && !zhVoice);
+function primeSpeech() {
+  try { if ('speechSynthesis' in window) { const u = new SpeechSynthesisUtterance(' '); u.volume = 0; speechSynthesis.speak(u); } } catch (e) {}
+}
+function say(text) {
+  if (!('speechSynthesis' in window)) return;
+  try {
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'zh-CN'; if (zhVoice) u.voice = zhVoice; u.rate = 0.8;
+    setTimeout(() => { try { speechSynthesis.speak(u); } catch (e) {} }, 60);
+  } catch (e) {}
+}
+let promptText = '', promptPinyin = '';
+function setPrompt(text, py) {
+  promptText = text; promptPinyin = py;
+  const pyEl = $('promptPy');
+  if (noVoice()) { pyEl.textContent = py; pyEl.classList.remove('hidden'); $('hintBtn').classList.add('hidden'); }
+  else { pyEl.classList.add('hidden'); pyEl.textContent = ''; $('hintBtn').classList.remove('hidden'); }
+  say(text);
+  const b = $('listenBtn'); b.classList.remove('ping'); void b.offsetWidth; b.classList.add('ping');
+}
+$('listenBtn').addEventListener('click', () => { if (promptText) say(promptText); });
+$('hintBtn').addEventListener('click', () => {
+  if (!S.running || !promptPinyin) return;
+  S.penalty += 3; S.levelPen += 3; S.hintsUsed++;
+  $('gPen').innerHTML = `<span>+${S.penalty}s</span>`;
+  $('promptPy').textContent = promptPinyin; $('promptPy').classList.remove('hidden'); $('hintBtn').classList.add('hidden');
+});
 const r1 = (x) => Math.round(x * 10) / 10;
 function show(id) {
   for (const s of ['start', 'wait', 'game', 'between', 'finish', 'teacher', 'reading', 'setup']) $(s).classList.toggle('hidden', s !== id);
@@ -3004,7 +3129,7 @@ function demo() {
 }
 const SET_PARAM = params.get('g');
 async function initStart() {
-  if (!SET_PARAM) { demo(); return; }
+  if (!SET_PARAM) { demo(); renderLevelLists(); return; }
   const btn = $('startBtn'), set = decodeSet(SET_PARAM);
   btn.disabled = true;
   if (!set) { $('err').textContent = 'This game link doesn’t work. Scan the QR code again.'; return; }
@@ -3013,7 +3138,7 @@ async function initStart() {
     const built = await buildSet(set.items);
     if (built.list.length < 4) throw new Error('too few');
     useSet(built);
-    $('lead').textContent = `Two levels, ${CHARS.length} characters each. Put two parts together to make a character. A wrong match adds 5 seconds. The fastest total time wins.`;
+    renderLevelLists();
     if (set.title) { $('setName').textContent = set.title; $('setName').classList.remove('hidden'); }
     demo();
     btn.disabled = false; btn.textContent = mustWait() ? 'Join the game' : 'Start';
@@ -3057,7 +3182,7 @@ function beginFromWait() {
   S.waiting = false; clearTimeout(soloTimer);
   startRun();
 }
-$('wSoloBtn').addEventListener('click', beginFromWait);
+$('wSoloBtn').addEventListener('click', () => { primeSpeech(); beginFromWait(); });
 $('wBack').addEventListener('click', () => { S.waiting = false; clearTimeout(soloTimer); show('start'); });
 $('startBtn').addEventListener('click', () => {
   if ($('startBtn').disabled) return;
@@ -3066,6 +3191,7 @@ $('startBtn').addEventListener('click', () => {
   $('err').textContent = '';
   store('cp_team', team);
   S.team = team; S.hints = $('hints').checked;
+  primeSpeech();
   if (mustWait()) joinWait(); else startRun();
 });
 $('toTeacher').addEventListener('click', () => { location.hash = 'teacher'; });
@@ -3079,32 +3205,43 @@ function route() {
 /* ===================== game shell ===================== */
 let tray = [null, null];
 function startRun() {
-  S.penalty = 0; S.mistakes = 0; S.acc = 0; S.splits = {};
+  S.penalty = 0; S.mistakes = 0; S.hintsUsed = 0; S.bonus = 0; S.wordsMade = 0; S.acc = 0; S.splits = {};
+  S.levels = levelList(); S.li = 0;
   S.counts = !!ROOM && !load(firstKey());
   if (S.counts) send(ROOM, { v: 2, t: 's', d: DEV, n: S.team });
-  startLevel('scatter');
+  startLevel(S.levels[0]);
+}
+function charSlots() {
+  const n = CHARS.length, cols = n <= 8 ? n : Math.ceil(n / 2);
+  $('slots').style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+  $('slots').style.maxWidth = Math.min(520, cols * 66) + 'px';
+  $('slots').style.justifyContent = '';
+  $('slots').innerHTML = CHARS.map(() => '<div class="slot"></div>').join('');
 }
 function startLevel(mode) {
   S.mode = mode; S.solved = []; S.levelPen = 0; S.running = false;
   show('game');
   $('game').classList.toggle('nohint', !S.hints);
-  $('gLevel').textContent = LEVEL_LABEL[mode];
+  $('gLevel').innerHTML = `Level ${S.li + 1} <span class="zh">${LEVELS[mode].zh}</span>`;
   $('gTime').textContent = fmt(S.acc);
   $('gPen').innerHTML = S.penalty ? `<span>+${S.penalty}s</span>` : '';
-  const n = CHARS.length, cols = n <= 8 ? n : Math.ceil(n / 2);
-  $('slots').style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-  $('slots').style.maxWidth = Math.min(520, cols * 66) + 'px';
-  $('slots').innerHTML = CHARS.map(() => '<div class="slot"></div>').join('');
+  $('wordTag').classList.add('hidden');
+  if (mode === 'snake') { words = snakeWords(); made = []; prefix = ''; snakeRack(SNAKE_SECS); } else charSlots();
   const board = $('board');
   board.innerHTML = '';
-  board.className = 'board' + (mode === 'rain' ? ' rain' : '');
+  board.className = 'board ' + mode;
   $('tray').classList.toggle('hidden', mode !== 'rain');
+  $('prompt').classList.toggle('hidden', mode !== 'mole');
+  $('pad').classList.toggle('hidden', mode !== 'snake');
+  promptText = ''; promptPinyin = ''; $('promptPy').classList.add('hidden'); $('hintBtn').classList.add('hidden');
   tray = [null, null]; $('t0').innerHTML = ''; $('t1').innerHTML = '';
   requestAnimationFrame(() => {
-    if (mode === 'scatter') setupScatter(); else setupRain();
+    ({ scatter: setupScatter, rain: setupRain, mole: setupMole, snake: setupSnake })[mode]();
     countdown(() => {
       S.t0 = performance.now(); S.running = true;
       if (mode === 'rain') { lastT = performance.now(); spawnIn = 0.2; }
+      if (mode === 'mole') nextTarget();
+      if (mode === 'snake') { lastStep = performance.now(); snakePause = lastStep + 1000; }
       S.raf = requestAnimationFrame(tick);
     });
   });
@@ -3123,7 +3260,9 @@ function tick(now) {
   if (!S.running) return;
   $('gTime').textContent = fmt(S.acc + elapsed() + S.levelPen);
   if (S.mode === 'rain') rainStep(now);
-  S.raf = requestAnimationFrame(tick);
+  else if (S.mode === 'mole') moleStep(now);
+  else if (S.mode === 'snake') snakeStep(now);
+  if (S.running) S.raf = requestAnimationFrame(tick);
 }
 function wrong(x, y, els) {
   S.mistakes++; S.penalty += PENALTY; S.levelPen += PENALTY;
@@ -3136,12 +3275,7 @@ function solved(c, x, y) {
   S.solved.push(c);
   const idx = S.solved.length - 1;
   const last = S.solved.length === CHARS.length;
-  if (last) {
-    S.running = false;
-    const lt = elapsed() + S.levelPen;
-    S.splits[S.mode] = lt; S.acc += lt; S.end = new Date();
-    $('gTime').textContent = fmt(S.acc);
-  }
+  if (last) endLevel();
   x = Math.max(64, Math.min(innerWidth - 64, x)); y = Math.max(150, Math.min(innerHeight - 130, y));
   const pop = el('div', 'pop in');
   pop.innerHTML = `<div class="flat">${charSVG(c.ch)}</div><span class="chip">${c.py}</span>`;
@@ -3158,18 +3292,37 @@ function solved(c, x, y) {
   setTimeout(() => {
     pop.remove();
     slot.classList.add('done'); slot.innerHTML = `<div class="flat">${charSVG(c.ch)}</div>`;
-    if (last) { if (S.mode === 'scatter') setTimeout(levelClear, 350); else finish(); }
+    if (last) setTimeout(afterLevel, 350);
   }, 1170);
 }
-function levelClear() {
+function endLevel(fixed) {
+  S.running = false;
+  const lt = (fixed != null ? fixed : elapsed()) + S.levelPen;
+  S.splits[S.mode] = lt; S.acc += lt; S.end = new Date();
+  $('gTime').textContent = fmt(S.acc);
+}
+function cleanupLevel() {
   cancelAnimationFrame(S.raf);
+  falling.forEach(f => f.el.remove()); falling = [];
+  moles = []; foods = []; segEls = [];
+  try { speechSynthesis.cancel(); } catch (e) {}
+}
+function afterLevel() {
+  cleanupLevel();
+  if (S.li < S.levels.length - 1) levelClear(); else finish();
+}
+function levelClear() {
+  const next = S.levels[S.li + 1], L = LEVELS[next];
+  $('bHead').textContent = `Level ${S.li + 1} clear`;
   $('bTime').textContent = fmt(S.acc);
-  $('bMeta').textContent = 'The clock is paused. ' + (S.mistakes
-    ? `${S.mistakes} wrong ${S.mistakes === 1 ? 'match' : 'matches'} so far (+${S.penalty}s).` : 'No wrong matches so far.');
-  if (S.counts) send(ROOM, { v: 2, t: 'l', d: DEV, n: S.team, a: r1(S.splits.scatter) });
+  $('bMeta').textContent = 'The clock is paused. ' + (S.penalty ? `+${S.penalty}s in penalties so far.` : 'No penalties so far.');
+  $('bNext').innerHTML = `Next: ${L.name} <span class="zh" style="font-size:22px;color:var(--chalk-2)">${L.zh}</span>`;
+  $('bHow').innerHTML = L.how.map(x => `<li>${x}</li>`).join('');
+  $('nextBtn').textContent = `Start level ${S.li + 2}`;
+  if (S.counts) send(ROOM, { v: 2, t: 'l', d: DEV, n: S.team, lv: S.li + 1, a: r1(S.splits[S.levels[S.li]]) });
   show('between');
 }
-$('nextBtn').addEventListener('click', () => startLevel('rain'));
+$('nextBtn').addEventListener('click', () => { primeSpeech(); S.li++; startLevel(S.levels[S.li]); });
 
 /* ===================== level 1: scatter ===================== */
 let tiles = [], drag = null, selected = null, zTop = 10, tileSize = 72;
@@ -3340,16 +3493,247 @@ function check() {
   }, 140);
 }
 
+/* ===================== level 3: whack-a-mole ===================== */
+let moles = [], moleTargets = [], moleIdx = 0, moleTarget = null, nextSpawn = 0, sinceTarget = 0, moleBusy = false;
+function setupMole() {
+  const board = $('board'), W = board.clientWidth, H = board.clientHeight;
+  const cols = 3, rows = 3, cw = W / cols, chh = H / rows;
+  const size = Math.round(Math.min(cw * 0.7, chh * 0.6, 108));
+  moles = [];
+  for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+    const hole = el('div', 'hole'), hw = size * 1.3, hh = size * 1.28;
+    hole.style.left = (c * cw + (cw - hw) / 2) + 'px'; hole.style.top = (r * chh + (chh - hh) / 2) + 'px';
+    hole.style.width = hw + 'px'; hole.style.height = hh + 'px';
+    const pit = el('div', 'pit'), tile = el('div', 'tile mole ink');
+    tile.style.width = tile.style.height = size + 'px';
+    pit.appendChild(tile); hole.append(el('div', 'mouth'), pit); board.appendChild(hole);
+    const m = { tile, up: false, c: null, until: 0 };
+    tile.addEventListener('pointerdown', (e) => { e.preventDefault(); whack(m); });
+    moles.push(m);
+  }
+  moleTargets = shuffle(CHARS.slice()); moleIdx = 0; moleTarget = null; moleBusy = false;
+}
+function moleUp(m, c, until) { m.c = c; m.tile.innerHTML = charSVG(c.ch); m.tile.classList.add('up'); m.tile.classList.remove('hit'); m.up = true; m.until = until; }
+function moleDown(m) { m.tile.classList.remove('up', 'hit'); m.up = false; m.c = null; }
+function nextTarget() {
+  if (moleIdx >= moleTargets.length) { endLevel(); setTimeout(afterLevel, 600); return; }
+  moleTarget = moleTargets[moleIdx]; sinceTarget = 0; moleBusy = false;
+  setPrompt(moleTarget.ch, moleTarget.py);
+  nextSpawn = performance.now() + 900;
+}
+function moleStep(now) {
+  for (const m of moles) if (m.up && now > m.until) moleDown(m);
+  if (!moleTarget || moleBusy || now < nextSpawn) return;
+  const free = moles.filter(m => !m.up), upCount = moles.length - free.length;
+  if (free.length && upCount < 3) {
+    const m = free[Math.floor(Math.random() * free.length)];
+    const targetUp = moles.some(x => x.up && x.c === moleTarget);
+    const useTarget = !targetUp && (sinceTarget >= 2 || Math.random() < 0.4);
+    let c = moleTarget;
+    if (!useTarget) { const others = CHARS.filter(x => x !== moleTarget); c = others[Math.floor(Math.random() * others.length)]; }
+    sinceTarget = c === moleTarget ? 0 : sinceTarget + 1;
+    moleUp(m, c, now + Math.max(1050, 1700 - 60 * moleIdx));
+  }
+  nextSpawn = now + rand(420, 760);
+}
+function whack(m) {
+  if (!S.running || !m.up || moleBusy) return;
+  const r = m.tile.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top;
+  if (m.c === moleTarget) {
+    moleBusy = true;
+    const c = moleTarget;
+    m.tile.classList.add('hit');
+    S.solved.push(c);
+    const slot = $('slots').children[S.solved.length - 1];
+    if (slot) { slot.classList.add('done'); slot.innerHTML = `<div class="flat">${charSVG(c.ch)}</div>`; }
+    floatText(x, y - 10, c.py, true);
+    moleIdx++; moleTarget = null;
+    setTimeout(() => { moles.forEach(moleDown); }, 260);
+    setTimeout(nextTarget, 800);
+  } else {
+    wrong(x, y - 10, [m.tile]);
+    setTimeout(() => moleDown(m), 320);
+  }
+}
+
+/* ===================== level 4: word snake ===================== */
+const SNAKE_SECS = 60, WORD_BONUS = 5, SNAKE_MISS = 3, FOOD_COUNT = 7;
+const EXTRA_CHARS = Array.from('人口大天日月上下山水木好是不学生老师吃喝看叫书车马手');
+let snake = [], dir = [1, 0], nextDir = [1, 0], foods = [], words = [], made = [], prefix = '';
+let cell = 40, gcols = 8, grows = 10, gox = 0, goy = 0, stepEvery = 300, lastStep = 0, snakePause = 0, segEls = [], leftShown = -1;
+function setupSnake() {
+  const board = $('board'), W = board.clientWidth, H = board.clientHeight;
+  gcols = W < 460 ? 8 : 10; cell = Math.floor(Math.min(W / gcols, 64)); grows = Math.max(6, Math.floor((H - 8) / cell));
+  gox = Math.floor((W - gcols * cell) / 2); goy = Math.floor((H - grows * cell) / 2);
+  const g = el('div', 'snake-grid');
+  Object.assign(g.style, { left: gox + 'px', top: goy + 'px', width: gcols * cell + 'px', height: grows * cell + 'px', backgroundSize: `${cell}px ${cell}px` });
+  board.appendChild(g);
+  const my = Math.floor(grows / 2);
+  snake = [[2, my], [1, my], [0, my]]; dir = [1, 0]; nextDir = [1, 0]; foods = []; segEls = [];
+  snakePause = 0; stepEvery = 300; leftShown = -1;
+  drawSnake(); fillFoods();
+}
+function snakeRack(left) {
+  const n = made.length, p = Array.from(prefix);
+  $('wordTag').innerHTML = `<b>${Math.max(0, Math.ceil(left))}s</b> left · ${n} ${n === 1 ? 'word' : 'words'}` +
+                           (n ? ` <span class="bonus">(−${n * WORD_BONUS}s)</span>` : '');
+  $('wordTag').classList.remove('hidden');
+  $('slots').style.gridTemplateColumns = `repeat(${p.length + 1}, 46px)`;
+  $('slots').style.maxWidth = 'none'; $('slots').style.justifyContent = 'center';
+  $('slots').innerHTML = p.map(ch => `<div class="slot done"><div class="flat txt">${ch}</div></div>`).join('') + '<div class="slot"></div>';
+}
+const at = (p) => gox + p[0] * cell, atY = (p) => goy + p[1] * cell;
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+function freeCell() {
+  const head = snake[0];
+  for (let k = 0; k < 400; k++) {
+    const p = [Math.floor(Math.random() * gcols), Math.floor(Math.random() * grows)];
+    if (snake.some(s => s[0] === p[0] && s[1] === p[1])) continue;
+    if (foods.some(f => Math.abs(f.p[0] - p[0]) + Math.abs(f.p[1] - p[1]) < 2)) continue;
+    if (Math.abs(head[0] - p[0]) + Math.abs(head[1] - p[1]) < 3) continue;
+    if (head[1] === p[1] && Math.abs(head[0] - p[0]) < 5) continue;   // not straight ahead of the head
+    return p;
+  }
+  return [Math.floor(Math.random() * gcols), Math.floor(Math.random() * grows)];
+}
+function placeFood(ch) {
+  const f = { ch, p: freeCell(), el: el('div', 'food', ch) };
+  f.el.style.width = f.el.style.height = (cell - 6) + 'px';
+  f.el.style.fontSize = Math.round(cell * 0.6) + 'px';
+  f.el.style.transform = `translate(${at(f.p) + 3}px, ${atY(f.p) + 3}px)`;
+  f.el.style.animation = 'popin .3s';
+  $('board').appendChild(f.el); foods.push(f);
+}
+function removeFood(f) { const i = foods.indexOf(f); if (i >= 0) foods.splice(i, 1); f.el.remove(); }
+function wordChars() { return new Set(words.flatMap(x => Array.from(x.w))); }
+function fillFoods() {
+  const onBoard = () => foods.map(f => f.ch);
+  const has = (w) => { const pool = onBoard(); return Array.from(w).every(ch => { const i = pool.indexOf(ch); if (i < 0) return false; pool.splice(i, 1); return true; }); };
+  const freshWords = () => { const f = words.filter(x => !made.includes(x.w)); return f.length ? f : words; };
+  // 1) the current word can always be finished
+  if (prefix) {
+    const conts = words.filter(x => x.w.startsWith(prefix) && x.w.length > prefix.length).map(x => Array.from(x.w)[Array.from(prefix).length]);
+    if (conts.length && !conts.some(ch => onBoard().includes(ch))) placeFood(pick(conts));
+  }
+  // 2) at least one whole word is on the board
+  if (!words.some(x => has(x.w))) {
+    const wd = pick(freshWords()), pool = onBoard();
+    for (const ch of Array.from(wd.w)) { const i = pool.indexOf(ch); if (i >= 0) pool.splice(i, 1); else placeFood(ch); }
+  }
+  // 3) top up: mostly characters from the words, some that fit no word
+  const wc = wordChars(), extra = [...CHARS.map(c => c.ch), ...EXTRA_CHARS].filter(ch => !wc.has(ch));
+  while (foods.length < FOOD_COUNT) {
+    if (extra.length && Math.random() < 0.3) placeFood(pick(extra));
+    else placeFood(pick(Array.from(pick(freshWords()).w)));
+  }
+}
+function drawSnake() {
+  const board = $('board');
+  while (segEls.length < snake.length) { const s = el('div', 'seg'); s.style.width = s.style.height = (cell - 4) + 'px'; board.appendChild(s); segEls.push(s); }
+  while (segEls.length > snake.length) segEls.pop().remove();
+  snake.forEach((p, i) => {
+    const s = segEls[i]; s.classList.toggle('head', i === 0);
+    const rot = i === 0 ? ({ '1,0': 90, '-1,0': -90, '0,1': 180, '0,-1': 0 })[dir.join(',')] : 0;
+    s.style.transform = `translate(${at(p) + 2}px, ${atY(p) + 2}px) rotate(${rot}deg)`;
+  });
+}
+function setDir(d) {
+  if (!S.running || S.mode !== 'snake') return;
+  if (d[0] === -dir[0] && d[1] === -dir[1]) return;
+  nextDir = d;
+}
+const startsWord = (pre) => words.some(x => x.w.startsWith(pre));
+function eat(f) {
+  const r = f.el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top;
+  removeFood(f);
+  let ok = true;
+  if (startsWord(prefix + f.ch)) prefix += f.ch;
+  else if (startsWord(f.ch)) { if (prefix) floatText(x, y - 6, 'New word', true); prefix = f.ch; }
+  else {
+    ok = false; prefix = '';
+    S.mistakes++; S.penalty += SNAKE_MISS; S.levelPen += SNAKE_MISS;
+    $('gPen').innerHTML = `<span>+${S.penalty}s</span>`;
+    floatText(x, y - 6, `+${SNAKE_MISS}s`); buzz();
+  }
+  const done = ok && words.find(w => w.w === prefix);
+  if (done) wordMade(done);
+  snakeRack(SNAKE_SECS - elapsed());
+  fillFoods();
+  return ok;
+}
+function wordMade(wd) {
+  made.push(wd.w); prefix = '';
+  S.levelPen -= WORD_BONUS; S.bonus += WORD_BONUS;
+  stepEvery = Math.max(190, 300 - 12 * made.length);
+  say(wd.w);
+  const pop = el('div', 'pop in');
+  pop.innerHTML = `<div class="word">${wd.w}</div><span class="chip">${wd.py} · −${WORD_BONUS}s</span>`;
+  pop.style.width = 'auto';
+  document.body.appendChild(pop);
+  const r = pop.getBoundingClientRect(), br = $('board').getBoundingClientRect();
+  pop.style.transform = `translate(${(innerWidth - r.width) / 2}px, ${br.top + 12}px)`;
+  pop.style.opacity = '.95';
+  setTimeout(() => { pop.style.transition = 'opacity .3s'; pop.style.opacity = '0'; }, 1100);
+  setTimeout(() => pop.remove(), 1450);
+}
+function snakeStep(now) {
+  const left = SNAKE_SECS - elapsed();
+  if (left <= 0) { snakeTimeUp(); return; }
+  if (Math.ceil(left) !== leftShown) { leftShown = Math.ceil(left); snakeRack(left); }
+  if (now < snakePause || now - lastStep < stepEvery) return;
+  lastStep = now;
+  dir = nextDir;
+  const h = snake[0], head = [(h[0] + dir[0] + gcols) % gcols, (h[1] + dir[1] + grows) % grows];
+  const hit = snake.findIndex((s, i) => i < snake.length - 1 && s[0] === head[0] && s[1] === head[1]);
+  snake.unshift(head);
+  if (hit >= 0) {   // ran into itself: lose the tail from there
+    snake = snake.slice(0, Math.max(3, hit + 1));
+    const r = segEls[0].getBoundingClientRect(); floatText(r.left + r.width / 2, r.top - 6, 'Ouch!', true);
+  }
+  const fi = foods.findIndex(f => f.p[0] === head[0] && f.p[1] === head[1]);
+  const grow = fi >= 0 ? eat(foods[fi]) : false;
+  if (!grow) snake.pop();
+  drawSnake();
+}
+function snakeTimeUp() {
+  S.wordsMade = made.length;
+  endLevel(SNAKE_SECS);
+  snakeRack(0);
+  const pop = el('div', 'pop in');
+  pop.innerHTML = `<div class="word">时间到！</div><span class="chip">${made.length} ${made.length === 1 ? 'word' : 'words'} · −${made.length * WORD_BONUS}s</span>`;
+  pop.style.width = 'auto';
+  document.body.appendChild(pop);
+  const r = pop.getBoundingClientRect();
+  pop.style.transform = `translate(${(innerWidth - r.width) / 2}px, ${innerHeight * 0.4}px)`;
+  setTimeout(() => { pop.remove(); afterLevel(); }, 1800);
+}
+document.querySelectorAll('#pad button').forEach(b => b.addEventListener('pointerdown', (e) => {
+  e.preventDefault(); setDir(b.dataset.d.split(',').map(Number));
+}));
+document.addEventListener('keydown', (e) => {
+  const d = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0] }[e.key];
+  if (d && S.mode === 'snake' && S.running) { e.preventDefault(); setDir(d); }
+});
+let swipe = null;
+$('board').addEventListener('pointerdown', (e) => { if (S.mode === 'snake') swipe = { x: e.clientX, y: e.clientY }; });
+$('board').addEventListener('pointerup', (e) => {
+  if (!swipe || S.mode !== 'snake') return;
+  const dx = e.clientX - swipe.x, dy = e.clientY - swipe.y; swipe = null;
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < 18) return;
+  setDir(Math.abs(dx) > Math.abs(dy) ? [Math.sign(dx), 0] : [0, Math.sign(dy)]);
+});
+
 /* ===================== finish ===================== */
 function finish() {
-  cancelAnimationFrame(S.raf);
-  falling.forEach(f => f.el.remove()); falling = [];
   S.final = S.acc;
   $('fTeam').textContent = S.team;
   $('fTime').textContent = fmt(S.final);
   const clock = S.end.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
-  const wrongText = S.mistakes ? `${S.mistakes} wrong ${S.mistakes === 1 ? 'match' : 'matches'} (+${S.penalty}s)` : 'No wrong matches';
-  $('fMeta').textContent = `Scatter ${fmt(S.splits.scatter)}, Rain ${fmt(S.splits.rain)}. ${wrongText}. Finished at ${clock}.`;
+  const parts = [S.mistakes ? `${S.mistakes} wrong (+${S.penalty - S.hintsUsed * 3}s)` : 'No wrong moves'];
+  if (S.hintsUsed) parts.push(`${S.hintsUsed} pinyin ${S.hintsUsed === 1 ? 'hint' : 'hints'} (+${S.hintsUsed * 3}s)`);
+  if (S.levels.includes('snake')) parts.push(`${S.wordsMade} ${S.wordsMade === 1 ? 'word' : 'words'} in Snake (−${S.bonus}s)`);
+  const wrongText = parts.join(', ');
+  $('fMeta').textContent = S.levels.map(m => `${LEVELS[m].name} ${fmt(S.splits[m])}`).join(', ') + `. ${wrongText}. Finished at ${clock}.`;
   $('fMade').innerHTML = CHARS.map(c => `<div class="say"><div class="flat">${charSVG(c.ch)}</div>
      <div><div class="py">${c.py}</div><div class="w">${c.w}</div><div class="wp">${c.wp}</div></div></div>`).join('');
   const sendBox = $('fSend');
@@ -3359,7 +3743,7 @@ function finish() {
     if (S.counts) {
       store(firstKey(), '1');
       sendBox.textContent = 'Sending your time to the class board…';
-      send(ROOM, { v: 2, t: 'f', d: DEV, n: S.team, s: r1(S.final), a: r1(S.splits.scatter), b: r1(S.splits.rain), w: S.mistakes }).then(ok => {
+      send(ROOM, { v: 2, t: 'f', d: DEV, n: S.team, s: r1(S.final), sp: S.levels.map(m => r1(S.splits[m])), w: S.mistakes, wd: S.wordsMade }).then(ok => {
         sendBox.className = 'send ' + (ok ? 'ok' : 'bad');
         sendBox.textContent = ok ? 'Your time is on the class board.' : 'The class board can’t be reached. Show this screen to your teacher.';
       });
@@ -3418,11 +3802,11 @@ function openTeacher(fresh) {
 function drawTeacher() {
   const d = tBoard.list();
   renderRank($('r1'), d, null);
-  const playing = d.l1.length + d.l2.length, pre = !tBoard.started;
+  const playing = d.playing.length, pre = !tBoard.started;
   $('joined').classList.toggle('hidden', !pre);
   $('tBoardSheet').classList.toggle('hidden', pre);
   if (pre) {
-    const teams = [...d.ready, ...d.l1, ...d.l2, ...d.done];
+    const teams = [...d.ready, ...d.playing, ...d.done];
     $('jCount').textContent = teams.length;
     $('jLabel').textContent = teams.length === 1 ? 'team joined' : 'teams joined';
     const box = $('jTeams'), have = new Set([...box.children].map(c => c.dataset.dev));
@@ -3468,6 +3852,12 @@ function wantedChars() {
   for (const c of Array.from($('setChars').value)) if (isHan(c) && !seen.has(c)) { seen.add(c); out.push(c); }
   return out;
 }
+function refreshWordCount() {
+  const s = $('setStatus'); if (s.classList.contains('bad') || !setupGood.length) return;
+  const nw = setupGood.filter(ch => Array.from((edits.get(ch) || {}).w || '').filter(isHan).length >= 2).length;
+  s.textContent = s.textContent.replace(/ (\d+ words for level 4 \(Snake\)\.|Add a word to at least 3 characters to play level 4 \(Snake\)\.)/,
+    nw >= 3 ? ` ${nw} words for level 4 (Snake).` : ' Add a word to at least 3 characters to play level 4 (Snake).');
+}
 function setStatus(text, bad) { const s = $('setStatus'); s.textContent = text; s.className = 'set-status' + (bad ? ' bad' : ''); }
 function txtTile(ch) { const d = el('div', 'flat txt', ch); return d; }
 async function renderSetup() {
@@ -3487,7 +3877,7 @@ async function renderSetup() {
     const py = el('input', 'py'); py.type = 'text'; py.maxLength = 12; py.value = e.py || info.py; py.setAttribute('aria-label', 'Pinyin for ' + ch);
     const wd = el('input', 'wd'); wd.type = 'text'; wd.maxLength = 16; wd.value = e.w || ''; wd.placeholder = 'Word (optional)'; wd.setAttribute('aria-label', 'Word with ' + ch);
     const save = () => edits.set(ch, { py: py.value.trim(), w: wd.value.trim() });
-    py.addEventListener('input', save); wd.addEventListener('input', save);
+    py.addEventListener('input', save); wd.addEventListener('input', () => { save(); refreshWordCount(); });
     const pa = el('div', 'flat wait'), pb = el('div', 'flat wait'), pc = txtTile(ch); pc.classList.add('wait');
     eq.append(pa, el('span', null, '+'), pb, el('span', null, '='), pc);
     row.append(py, wd, x); list.appendChild(row);
@@ -3507,6 +3897,8 @@ async function renderSetup() {
   if (seq !== setupSeq) return;
   const n = setupGood.length;
   let msg = n + ' characters ready.';
+  const nw = setupGood.filter(ch => Array.from((edits.get(ch) || {}).w || '').filter(isHan).length >= 2).length;
+  msg += nw >= 3 ? ` ${nw} words for level 4 (Snake).` : ` Add a word to at least 3 characters to play level 4 (Snake).`;
   if (all.length > 12) msg += ' Only the first 12 are used.';
   if (n < 4) setStatus(`${n} ready. You need at least 4 characters that can be split.`, true);
   else { setStatus(msg); $('setSave').disabled = false; }
